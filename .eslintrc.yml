@@ -1,0 +1,33 @@
+env:
+  browser: true
+  es6: true
+  jest: true
+  node: true
+extends: [
+  'eslint:recommended',
+  'plugin:react/recommended',
+  'plugin:prettier/recommended'
+]
+parser:
+  babel-eslint
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 2018
+  sourceType: module
+plugins:
+  - react
+  - prettier
+rules:
+  no-console:
+    - warn
+  no-extra-boolean-cast:
+    - warn
+  react/display-name:
+    - off
+  linebreak-style:
+    - error
+    - unix
+settings:
+  react:
+    version: detect
