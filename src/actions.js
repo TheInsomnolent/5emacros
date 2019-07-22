@@ -2,6 +2,8 @@ export const ADD_ATTACK = "ADD_ATTACK"
 export const DELETE_ATTACK = "DELETE_ATTACK"
 export const ROLL_ATTACK = "ROLL_ATTACK"
 export const ADD_ATTACK_TO_COMBO = "ADD_ATTACK_TO_COMBO"
+export const CLEAR_CURRENT_ROLL = "CLEAR_CURRENT_ROLL"
+export const SET_DC = "SET_DC"
 
 export const addAttack = ({ attack }) => ({
     type: ADD_ATTACK,
@@ -25,4 +27,13 @@ export const addAttackToCombo = ({
 }) => ({
     type: ADD_ATTACK_TO_COMBO,
     payload: { name, advantage, disadvantage }
+})
+
+export const clearCurrentRoll = () => ({
+    type: CLEAR_CURRENT_ROLL
+})
+
+export const setDC = ({ DC }) => ({
+    type: SET_DC,
+    payload: { DC }
 })

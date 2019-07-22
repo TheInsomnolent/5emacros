@@ -1,12 +1,19 @@
 import { omit } from "lodash"
-import { ADD_ATTACK, DELETE_ATTACK, ROLL_ATTACK } from "./actions"
+import {
+    ADD_ATTACK,
+    DELETE_ATTACK,
+    ROLL_ATTACK,
+    CLEAR_CURRENT_ROLL,
+    SET_DC
+} from "./actions"
 import { rollAttacks } from "./Roll"
 
 let initialState = {
     attacks: {},
     combos: {},
     currentCombo: [],
-    rollData: []
+    rollData: [],
+    currentDC: 10
 }
 
 const storedData = JSON.parse(window.localStorage.getItem("storedState"))
@@ -47,6 +54,20 @@ const reducer = (state = initialState, action) => {
                         name: action.payload.name
                     }
                 ])
+            }
+            break
+
+        case CLEAR_CURRENT_ROLL:
+            next_state = {
+                ...state,
+                rollData: []
+            }
+            break
+
+        case SET_DC:
+            next_state = {
+                ...state,
+                currentDC: action.payload.DC < 1 ? 1 : action.payload.DC
             }
             break
 

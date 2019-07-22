@@ -1,5 +1,14 @@
 import React from "react"
 import { sum } from "lodash"
+import { connect } from "react-redux"
+import Modal from "@material-ui/core/Modal"
+import { clearCurrentRoll as clearCurrentRoll_, setDC } from "./actions"
+import { makeStyles } from "@material-ui/core/styles"
+import theme from "./theme"
+import { Typography, Grid, Input, Box } from "@material-ui/core"
+import Slider from "@material-ui/core/Slider"
+import Security from "@material-ui/icons/SecurityRounded"
+import Heart from "@material-ui/icons/FavoriteBorder"
 
 const polyDie_ = faces => Math.floor(Math.random() * Math.floor(faces)) + 1
 const d20 = () => polyDie_(20)
@@ -64,8 +73,218 @@ export const rollAttacks = attacks => {
     return rollData
 }
 
-const Roll = () => {
-    return <div />
+const modalWidth = window.innerWidth >= 550 ? 800 : 400
+
+const useStyles = makeStyles(theme_ => ({
+    paper: {
+        position: "absolute",
+        width: modalWidth,
+        left: (window.innerWidth - modalWidth) / 2,
+        top: theme.space.xl,
+        backgroundColor: theme_.palette.background.paper,
+        border: "none",
+        boxShadow: theme_.shadows[5],
+        padding: theme_.spacing(2, 4, 4),
+        outline: "none"
+    }
+}))
+
+const RollModal = ({ children, ...rest }) => {
+    const classes = useStyles()
+    return (
+        <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            {...rest}
+        >
+            <div style={classes.modalStyle} className={classes.paper}>
+                {children}
+            </div>
+        </Modal>
+    )
 }
 
-export default Roll
+const Roll = ({ rollData, clearCurrentRoll, currentDC, updateDC }) => {
+    return (
+        <RollModal
+            open={!!rollData && rollData.length > 0}
+            onClose={clearCurrentRoll}
+        >
+            <Typography
+                variant="h5"
+                component="h2"
+                style={{ textTransform: "capitalize" }}
+            >
+                Attack Results
+            </Typography>
+
+            <Typography id="input-slider" gutterBottom>
+                Attack DC
+            </Typography>
+            <Grid container spacing={2} alignItems="center">
+                <Grid item>
+                    <Security />
+                </Grid>
+                <Grid item xs>
+                    <Slider
+                        value={currentDC}
+                        onChange={(event, newValue) =>
+                            updateDC({ DC: newValue })
+                        }
+                        aria-labelledby="input-slider"
+                        min={1}
+                        max={30}
+                        marks={[
+                            { label: "1", value: 1 },
+                            { label: "20", value: 20 }
+                        ]}
+                    />
+                </Grid>
+                <Grid item>
+                    <Input
+                        value={currentDC}
+                        margin="dense"
+                        onChange={event => {
+                            if (event.target.value)
+                                updateDC({ DC: event.target.value })
+                        }}
+                        inputProps={{
+                            step: 1,
+                            min: 0,
+                            max: 100,
+                            type: "number",
+                            "aria-labelledby": "input-slider"
+                        }}
+                    />
+                </Grid>
+            </Grid>
+
+            <Typography
+                variant="h6"
+                component="h2"
+                style={{
+                    textTransform: "capitalize",
+                    marginTop: theme.space.s
+                }}
+            >
+                Individual Attack Rolls
+            </Typography>
+            <Grid
+                container
+                spacing={2}
+                style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-around"
+                }}
+            >
+                {rollData.map((roll, index) => {
+                    let isMiss = roll.toHit < currentDC
+
+                    let bgcolor = null
+                    if (roll.crit === "SUCCESS") {
+                        bgcolor = "gold"
+                        isMiss = false
+                    }
+                    if (roll.crit === "FAIL") {
+                        bgcolor = "error.main"
+                        isMiss = true
+                    }
+
+                    return (
+                        <Grid key={index} item>
+                            <Box
+                                p={2}
+                                m={1}
+                                bgcolor={bgcolor}
+                                boxShadow={1}
+                                style={{ width: "150px" }}
+                            >
+                                <Typography
+                                    variant="h7"
+                                    component="h3"
+                                    style={{
+                                        textTransform: "capitalize",
+                                        width: "100%",
+                                        textAlign: "center",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                        overflowX: "hidden"
+                                    }}
+                                >
+                                    {roll.name}
+                                </Typography>
+                                <Typography
+                                    variant="h4"
+                                    component="h3"
+                                    color={
+                                        isMiss ? "textSecondary" : "textPrimary"
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    {`${
+                                        roll.crit === "SUCCESS"
+                                            ? "N20"
+                                            : roll.crit === "FAIL"
+                                            ? "N1"
+                                            : roll.toHit
+                                    }`}
+                                    <Security />
+                                </Typography>
+                                <Typography
+                                    variant="h4"
+                                    component="h3"
+                                    color={
+                                        isMiss ? "textSecondary" : "textPrimary"
+                                    }
+                                    style={{
+                                        width: "100%",
+                                        textAlign: "center"
+                                    }}
+                                >
+                                    {roll.damage}
+                                    <Heart />
+                                </Typography>
+                                <Typography
+                                    style={{
+                                        width: "100%",
+                                        textAlign: "center",
+                                        textTransform: "lowercase",
+                                        fontSize: theme.font.size.s
+                                    }}
+                                >
+                                    {roll.magical && "magic "}
+                                    {roll.type}
+                                </Typography>
+                            </Box>
+                        </Grid>
+                    )
+                })}
+            </Grid>
+        </RollModal>
+    )
+}
+
+const mapStateToProps = state => ({
+    rollData: state.rollData,
+    currentDC: state.currentDC
+})
+
+const mapDispatchToProps = dispatch => ({
+    clearCurrentRoll() {
+        dispatch(clearCurrentRoll_())
+    },
+    updateDC({ DC }) {
+        dispatch(setDC({ DC }))
+    }
+})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Roll)

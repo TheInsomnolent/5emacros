@@ -4,6 +4,7 @@ import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import Attacks from "./Attacks"
 import theme from "./theme"
+import Roll from "./Roll"
 
 function App() {
     return (
@@ -29,6 +30,8 @@ function App() {
             >
                 <Attacks />
             </div>
+
+            <Roll />
         </Fragment>
     )
 }
