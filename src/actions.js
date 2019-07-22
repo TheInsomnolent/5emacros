@@ -18,7 +18,11 @@ export const rollAttack = ({ name }) => ({
     payload: { name }
 })
 
-export const addAttackToCombo = ({ name }) => ({
+export const addAttackToCombo = ({
+    name,
+    advantage = false,
+    disadvantage = false
+}) => ({
     type: ADD_ATTACK_TO_COMBO,
-    payload: { name }
+    payload: { name, advantage, disadvantage }
 })

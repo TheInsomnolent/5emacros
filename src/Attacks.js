@@ -12,8 +12,8 @@ import InputLabel from "@material-ui/core/InputLabel"
 import FormControl from "@material-ui/core/FormControl"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Checkbox from "@material-ui/core/Checkbox"
-import CheckBoxIcon from "@material-ui/icons/CheckBox"
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank"
+import MagicCheckboxUnchecked from "@material-ui/icons/Brightness1Outlined"
+import MagicCheckboxChecked from "@material-ui/icons/Brightness7"
 import { connect } from "react-redux"
 import theme from "./theme"
 import { pick } from "lodash"
@@ -148,7 +148,7 @@ class AddAttack extends Component {
         ])
         attack.name = attack.name.toLowerCase()
         attack.hit = attack.hit.replace(" ", "")
-        attack.damage = attack.damage.replace(" ", "")
+        attack.damage = attack.damage.replace(" ", "").toLowerCase()
 
         if (this.state.name === "") errors.name = "Must provide name"
         if (this.state.type === "") errors.type = "Must select damage type"
@@ -273,10 +273,10 @@ class AddAttack extends Component {
                                         margin: `${theme.space.xs}`
                                     }}
                                     icon={
-                                        <CheckBoxOutlineBlankIcon fontSize="small" />
+                                        <MagicCheckboxUnchecked fontSize="small" />
                                     }
                                     checkedIcon={
-                                        <CheckBoxIcon fontSize="small" />
+                                        <MagicCheckboxChecked fontSize="small" />
                                     }
                                     value="checkedMagical"
                                     onChange={event =>
@@ -291,6 +291,7 @@ class AddAttack extends Component {
                         <Button
                             type="submit"
                             color="secondary"
+                            variant="outlined"
                             className={classes.button}
                         >
                             Add
