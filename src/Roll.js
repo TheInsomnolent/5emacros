@@ -141,10 +141,10 @@ const Roll = ({ rollData, clearCurrentRoll, currentDC, updateDC }) => {
                         aria-labelledby="input-slider"
                         min={1}
                         max={30}
-                        marks={[
-                            { label: "1", value: 1 },
-                            { label: "20", value: 20 }
-                        ]}
+                        marks={Object.values(rollData).map(({ toHit }) => ({
+                            label: toHit,
+                            value: toHit
+                        }))}
                     />
                 </Grid>
                 <Grid item>
