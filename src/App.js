@@ -4,7 +4,7 @@ import Attacks from "./Attacks"
 import theme from "./theme"
 import Roll from "./Roll"
 import Combos from "./Combos"
-import Resistances from "./Resistances";
+import Target from "./Target";
 
 function App() {
     return (
@@ -21,7 +21,7 @@ function App() {
                     margin: "0 auto"
                 }}
             >
-                <Resistances />
+                <Target />
                 <Attacks />
                 <Combos />
             </div>

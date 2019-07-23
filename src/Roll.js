@@ -3,16 +3,17 @@ import { sum } from "lodash"
 import { connect } from "react-redux"
 import { clearCurrentRoll as clearCurrentRoll_, setDC } from "./actions"
 import { makeStyles } from "@material-ui/core/styles"
-import theme from "./theme"
-import { Typography, Grid, Input, Box } from "@material-ui/core"
-import Slider from "@material-ui/core/Slider"
+import { Typography, Grid, Box, IconButton } from "@material-ui/core"
 import Security from "@material-ui/icons/SecurityRounded"
+import Close from "@material-ui/icons/Close"
 import Heart from "@material-ui/icons/FavoriteBorder"
 import Damage from "./Damage"
+import Target from "./Target"
 import Dialog from "@material-ui/core/Dialog"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Slide from "@material-ui/core/Slide"
+import Drawer from "./Drawer"
 
 const polyDie_ = faces => Math.floor(Math.random() * Math.floor(faces)) + 1
 const d20 = () => polyDie_(20)
@@ -77,39 +78,57 @@ export const rollAttacks = attacks => {
     return rollData
 }
 
-const modalWidth = window.innerWidth >= 550 ? 800 : 400
-
-const useStyles = makeStyles(theme_ => ({
-    paper: {
-        position: "absolute",
-        width: modalWidth,
-        left: (window.innerWidth - modalWidth) / 2,
-        top: theme.space.xl,
-        backgroundColor: theme_.palette.background.paper,
-        border: "none",
-        boxShadow: theme_.shadows[5],
-        padding: theme_.spacing(2, 4, 4),
-        outline: "none"
+const useStyles = makeStyles(theme_ => {
+    return {
+        modal: {
+            backgroundColor: "#efefef"
+        }
     }
-}))
+})
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
-const RollModal = ({ children, title, ...rest }) => {
+const RollModal = ({ children, title, close, ...rest }) => {
     const classes = useStyles()
+    const fullscreen = document.documentElement.clientWidth < 500
     return (
         <Dialog
             maxWidth="xl"
-            fullScreen={false}
+            fullScreen={fullscreen}
             TransitionComponent={Transition}
             aria-labelledby="responsive-dialog-title"
             scroll="body"
+            PaperProps={{
+                className: classes.modal
+            }}
             {...rest}
         >
-            <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
-            <DialogContent style={{ minWidth: "400px" }}>
+            <DialogTitle
+                disableTypography
+                id="responsive-dialog-title"
+                className={classes.modal}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
+                <Typography variant="h5" component="h2">
+                    {title}
+                </Typography>
+
+                <IconButton
+                    aria-label="Account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={close}
+                    color="inherit"
+                >
+                    <Close styles={{ marginLeft: "auto" }} />
+                </IconButton>
+            </DialogTitle>
+            <DialogContent
+                style={{ minWidth: fullscreen ? "" : "400px" }}
+                className={classes.modal}
+            >
                 {children}
             </DialogContent>
         </Dialog>
@@ -121,158 +140,115 @@ const Roll = ({ rollData, clearCurrentRoll, currentDC, updateDC }) => {
         <RollModal
             open={!!rollData && rollData.length > 0}
             onClose={clearCurrentRoll}
+            close={clearCurrentRoll}
             title="Attack Results"
         >
             <Damage />
+            <Target small />
 
-            <Typography id="input-slider" gutterBottom>
-                Attack DC
-            </Typography>
-            <Grid container spacing={2} alignItems="center">
-                <Grid item>
-                    <Security />
-                </Grid>
-                <Grid item xs>
-                    <Slider
-                        value={currentDC}
-                        onChange={(event, newValue) =>
-                            updateDC({ DC: newValue })
+            <Drawer id="rolls" heading="Individual Attack Rolls" small>
+                <Grid
+                    container
+                    spacing={2}
+                    style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        justifyContent: "space-around"
+                    }}
+                >
+                    {rollData.map((roll, index) => {
+                        let isMiss = roll.toHit < currentDC
+
+                        let bgcolor = null
+                        if (roll.crit === "SUCCESS") {
+                            bgcolor = "gold"
+                            isMiss = false
                         }
-                        aria-labelledby="input-slider"
-                        min={1}
-                        max={30}
-                        marks={Object.values(rollData).map(({ toHit }) => ({
-                            label: toHit,
-                            value: toHit
-                        }))}
-                    />
+                        if (roll.crit === "FAIL") {
+                            bgcolor = "error.main"
+                            isMiss = true
+                        }
+
+                        return (
+                            <Grid key={index} item>
+                                <Box
+                                    p={2}
+                                    m={1}
+                                    bgcolor={bgcolor}
+                                    boxShadow={1}
+                                    style={{ width: "150px" }}
+                                >
+                                    <Typography
+                                        variant="subtitle1"
+                                        component="h3"
+                                        style={{
+                                            textTransform: "capitalize",
+                                            width: "100%",
+                                            textAlign: "center",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                            overflowX: "hidden"
+                                        }}
+                                    >
+                                        {roll.name}
+                                    </Typography>
+                                    <Typography
+                                        variant="h4"
+                                        component="h3"
+                                        color={
+                                            isMiss
+                                                ? "textSecondary"
+                                                : "textPrimary"
+                                        }
+                                        style={{
+                                            width: "100%",
+                                            textAlign: "center"
+                                        }}
+                                    >
+                                        {`${
+                                            roll.crit === "SUCCESS"
+                                                ? "N20"
+                                                : roll.crit === "FAIL"
+                                                ? "N1"
+                                                : roll.toHit
+                                        }`}
+                                        <Security />
+                                    </Typography>
+                                    <Typography
+                                        variant="h4"
+                                        component="h3"
+                                        color={
+                                            isMiss
+                                                ? "textSecondary"
+                                                : "textPrimary"
+                                        }
+                                        style={{
+                                            width: "100%",
+                                            textAlign: "center"
+                                        }}
+                                    >
+                                        {roll.damage}
+                                        <Heart />
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        style={{
+                                            width: "100%",
+                                            textAlign: "center",
+                                            textTransform: "lowercase"
+                                        }}
+                                    >
+                                        {roll.magical && "magic "}
+                                        {roll.type}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item>
-                    <Input
-                        value={currentDC}
-                        margin="dense"
-                        onChange={event => {
-                            if (event.target.value)
-                                updateDC({ DC: event.target.value })
-                        }}
-                        inputProps={{
-                            step: 1,
-                            min: 0,
-                            max: 100,
-                            type: "number",
-                            "aria-labelledby": "input-slider"
-                        }}
-                    />
-                </Grid>
-            </Grid>
-
-            <Typography
-                variant="h6"
-                component="h2"
-                style={{
-                    textTransform: "capitalize",
-                    marginTop: theme.space.s
-                }}
-            >
-                Individual Attack Rolls
-            </Typography>
-            <Grid
-                container
-                spacing={2}
-                style={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "space-around"
-                }}
-            >
-                {rollData.map((roll, index) => {
-                    let isMiss = roll.toHit < currentDC
-
-                    let bgcolor = null
-                    if (roll.crit === "SUCCESS") {
-                        bgcolor = "gold"
-                        isMiss = false
-                    }
-                    if (roll.crit === "FAIL") {
-                        bgcolor = "error.main"
-                        isMiss = true
-                    }
-
-                    return (
-                        <Grid key={index} item>
-                            <Box
-                                p={2}
-                                m={1}
-                                bgcolor={bgcolor}
-                                boxShadow={1}
-                                style={{ width: "150px" }}
-                            >
-                                <Typography
-                                    variant="subtitle1"
-                                    component="h3"
-                                    style={{
-                                        textTransform: "capitalize",
-                                        width: "100%",
-                                        textAlign: "center",
-                                        textOverflow: "ellipsis",
-                                        whiteSpace: "nowrap",
-                                        overflowX: "hidden"
-                                    }}
-                                >
-                                    {roll.name}
-                                </Typography>
-                                <Typography
-                                    variant="h4"
-                                    component="h3"
-                                    color={
-                                        isMiss ? "textSecondary" : "textPrimary"
-                                    }
-                                    style={{
-                                        width: "100%",
-                                        textAlign: "center"
-                                    }}
-                                >
-                                    {`${
-                                        roll.crit === "SUCCESS"
-                                            ? "N20"
-                                            : roll.crit === "FAIL"
-                                            ? "N1"
-                                            : roll.toHit
-                                    }`}
-                                    <Security />
-                                </Typography>
-                                <Typography
-                                    variant="h4"
-                                    component="h3"
-                                    color={
-                                        isMiss ? "textSecondary" : "textPrimary"
-                                    }
-                                    style={{
-                                        width: "100%",
-                                        textAlign: "center"
-                                    }}
-                                >
-                                    {roll.damage}
-                                    <Heart />
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    style={{
-                                        width: "100%",
-                                        textAlign: "center",
-                                        textTransform: "lowercase"
-                                    }}
-                                >
-                                    {roll.magical && "magic "}
-                                    {roll.type}
-                                </Typography>
-                            </Box>
-                        </Grid>
-                    )
-                })}
-            </Grid>
+            </Drawer>
         </RollModal>
     )
 }

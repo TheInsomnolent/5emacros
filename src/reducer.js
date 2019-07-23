@@ -40,7 +40,9 @@ let initialState = {
     attacks: {},
     combos: {},
     drawers: {
-        attacks: true
+        attacks: true,
+        damage: true,
+        critFailDamage: true
     },
     currentComboName: "",
     currentCombo: [],
