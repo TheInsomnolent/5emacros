@@ -1,7 +1,6 @@
 import React from "react"
 import { sum } from "lodash"
 import { connect } from "react-redux"
-import Modal from "@material-ui/core/Modal"
 import { clearCurrentRoll as clearCurrentRoll_, setDC } from "./actions"
 import { makeStyles } from "@material-ui/core/styles"
 import theme from "./theme"
@@ -10,6 +9,10 @@ import Slider from "@material-ui/core/Slider"
 import Security from "@material-ui/icons/SecurityRounded"
 import Heart from "@material-ui/icons/FavoriteBorder"
 import Damage from "./Damage"
+import Dialog from "@material-ui/core/Dialog"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import Slide from "@material-ui/core/Slide"
 
 const polyDie_ = faces => Math.floor(Math.random() * Math.floor(faces)) + 1
 const d20 = () => polyDie_(20)
@@ -90,24 +93,26 @@ const useStyles = makeStyles(theme_ => ({
     }
 }))
 
-const RollModal = ({ children, ...rest }) => {
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />
+})
+
+const RollModal = ({ children, title, ...rest }) => {
     const classes = useStyles()
     return (
-        <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
+        <Dialog
+            maxWidth="xl"
+            fullScreen={false}
+            TransitionComponent={Transition}
+            aria-labelledby="responsive-dialog-title"
+            scroll="body"
             {...rest}
         >
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column"
-                }}
-                className={classes.paper}
-            >
+            <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
+            <DialogContent style={{ minWidth: "400px" }}>
                 {children}
-            </div>
-        </Modal>
+            </DialogContent>
+        </Dialog>
     )
 }
 
@@ -116,15 +121,8 @@ const Roll = ({ rollData, clearCurrentRoll, currentDC, updateDC }) => {
         <RollModal
             open={!!rollData && rollData.length > 0}
             onClose={clearCurrentRoll}
+            title="Attack Results"
         >
-            <Typography
-                variant="h5"
-                component="h2"
-                style={{ textTransform: "capitalize" }}
-            >
-                Attack Results
-            </Typography>
-
             <Damage />
 
             <Typography id="input-slider" gutterBottom>

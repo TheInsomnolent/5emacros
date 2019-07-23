@@ -284,13 +284,15 @@ class CurrentCombo extends Component {
                         )}
                     </Typography>
 
-                    <IconButton aria-label="Delete" size="small">
-                        <DeleteIcon
-                            fontSize={theme.font.size.s}
-                            onClick={() => {
-                                this.props.removeAttackFromCombo({ index })
-                            }}
-                        />
+                    <IconButton
+                        aria-label="Delete"
+                        size="small"
+                        onClick={() => {
+                            this.props.removeAttackFromCombo({ index })
+                        }}
+                        style={{ fontSize: theme.font.size.s }}
+                    >
+                        <DeleteIcon />
                     </IconButton>
                 </div>
             )
