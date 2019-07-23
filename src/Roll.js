@@ -9,6 +9,7 @@ import { Typography, Grid, Input, Box } from "@material-ui/core"
 import Slider from "@material-ui/core/Slider"
 import Security from "@material-ui/icons/SecurityRounded"
 import Heart from "@material-ui/icons/FavoriteBorder"
+import Damage from "./Damage"
 
 const polyDie_ = faces => Math.floor(Math.random() * Math.floor(faces)) + 1
 const d20 = () => polyDie_(20)
@@ -97,7 +98,13 @@ const RollModal = ({ children, ...rest }) => {
             aria-describedby="simple-modal-description"
             {...rest}
         >
-            <div style={classes.modalStyle} className={classes.paper}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column"
+                }}
+                className={classes.paper}
+            >
                 {children}
             </div>
         </Modal>
@@ -117,6 +124,8 @@ const Roll = ({ rollData, clearCurrentRoll, currentDC, updateDC }) => {
             >
                 Attack Results
             </Typography>
+
+            <Damage />
 
             <Typography id="input-slider" gutterBottom>
                 Attack DC
@@ -203,7 +212,7 @@ const Roll = ({ rollData, clearCurrentRoll, currentDC, updateDC }) => {
                                 style={{ width: "150px" }}
                             >
                                 <Typography
-                                    variant="h7"
+                                    variant="subtitle1"
                                     component="h3"
                                     style={{
                                         textTransform: "capitalize",
@@ -251,11 +260,11 @@ const Roll = ({ rollData, clearCurrentRoll, currentDC, updateDC }) => {
                                     <Heart />
                                 </Typography>
                                 <Typography
+                                    variant="body2"
                                     style={{
                                         width: "100%",
                                         textAlign: "center",
-                                        textTransform: "lowercase",
-                                        fontSize: theme.font.size.s
+                                        textTransform: "lowercase"
                                     }}
                                 >
                                     {roll.magical && "magic "}

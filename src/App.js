@@ -1,26 +1,27 @@
 import React, { Fragment } from "react"
-import AppBar from "@material-ui/core/AppBar"
+import AdmiralAppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import Attacks from "./Attacks"
 import theme from "./theme"
 import Roll from "./Roll"
+import Combos from "./Combos";
 
 function App() {
     return (
         <Fragment>
-            <AppBar>
+            <AdmiralAppBar>
                 <Toolbar position="static">
                     <Typography variant="h6" color="inherit">
-                        Combo Calculator
+                        5e Combo Calculator
                     </Typography>
                 </Toolbar>
-            </AppBar>
+            </AdmiralAppBar>
 
             <div
                 style={{
                     display: "flex",
-                    flexDirection: "row",
+                    flexDirection: "column",
                     flexWrap: "wrap",
                     width: "90%",
                     justifyContent: "center",
@@ -29,6 +30,7 @@ function App() {
                 }}
             >
                 <Attacks />
+                <Combos />
             </div>
 
             <Roll />
