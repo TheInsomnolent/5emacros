@@ -150,21 +150,36 @@ const reducer = (state = initialState, action) => {
                         ...state.attacks[action.payload.name],
                         name: action.payload.name
                     }
-                ])
+                ]),
+                drawers: {
+                    ...state.drawers,
+                    damage: true,
+                    critFailDamage: true
+                }
             }
             break
 
         case ROLL_COMBO:
             next_state = {
                 ...state,
-                rollData: rollAttacks(state.combos[action.payload.name])
+                rollData: rollAttacks(state.combos[action.payload.name]),
+                drawers: {
+                    ...state.drawers,
+                    damage: true,
+                    critFailDamage: true
+                }
             }
             break
 
         case ROLL_CURRENT_COMBO:
             next_state = {
                 ...state,
-                rollData: rollAttacks(state.currentCombo)
+                rollData: rollAttacks(state.currentCombo),
+                drawers: {
+                    ...state.drawers,
+                    damage: true,
+                    critFailDamage: true
+                }
             }
             break
 
@@ -199,7 +214,11 @@ const reducer = (state = initialState, action) => {
                         name: action.payload.name,
                         ...state.attacks[action.payload.name]
                     }
-                ]
+                ],
+                drawers: {
+                    ...state.drawers,
+                    combos: true
+                }
             }
             break
 
