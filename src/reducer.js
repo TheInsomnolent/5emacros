@@ -134,10 +134,10 @@ const reducer = (state = initialState, action) => {
         case REMOVE_ATTACK_FROM_COMBO:
             next_state = {
                 ...state,
-                currentCombo: [...state.currentCombo].splice(
-                    action.payload.index,
-                    1
-                )
+                currentCombo: [
+                    ...state.currentCombo.slice(0, action.payload.index),
+                    ...state.currentCombo.slice(action.payload.index + 1)
+                ]
             }
             break
 

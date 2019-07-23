@@ -9,7 +9,8 @@ const useStyles = makeStyles(theme => ({
     root: {
         display: "flex",
         justifyContent: "center",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        minHeight: "48px"
     },
     chip: {
         margin: theme.spacing(1)
