@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components"
-import { createMuiTheme } from "@material-ui/core/styles";
-import red from '@material-ui/core/colors/red';
-import grey from '@material-ui/core/colors/grey';
+import { createMuiTheme } from "@material-ui/core/styles"
+import red from "@material-ui/core/colors/red"
+import grey from "@material-ui/core/colors/grey"
 
 /**  set up Material UI components to match
 
@@ -122,7 +122,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   #root {
-    padding: 0 ${theme.space.s};
+    padding: 0;
     flex-direction: column;
     &>*:not(:last-child) { margin-bottom: ${theme.space.m}; }
   }
@@ -285,6 +285,23 @@ ${"" /* http://google.github.io/material-design-icons/#getting-icons */}
   /* Rules for using icons as white on a dark background. */
   .material-icons.md-light { color: rgba(255, 255, 255, 1); }
   .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+
+  /* header input override */
+  .characterNameInput {
+    div {
+      color: white;
+      border-color: white;
+    }
+    .MuiInput-underline::before{
+      transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+    }
+    .MuiInput-underline::after{
+      transition: transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+      border-bottom: 2px solid #d32f2f;
+    }
+  }
 `
 
 export default theme

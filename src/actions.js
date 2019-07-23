@@ -12,6 +12,9 @@ export const CLEAR_CURRENT_COMBO = "CLEAR_CURRENT_COMBO"
 export const DELETE_COMBO = "DELETE_COMBO"
 export const EDIT_COMBO = "EDIT_COMBO"
 export const UPDATE_CURRENT_COMBO_NAME = "UPDATE_CURRENT_COMBO_NAME"
+export const NEW_CHARACTER = "NEW_CHARACTER"
+export const CHANGE_CHARACTER = "CHANGE_CHARACTER"
+export const RENAME_CURRENT_CHARACTER = "RENAME_CURRENT_CHARACTER"
 
 export const addAttack = ({ attack }) => ({
     type: ADD_ATTACK,
@@ -77,5 +80,19 @@ export const rollCurrentCombo = () => ({
 
 export const updateCurrentComboName = ({ name }) => ({
     type: UPDATE_CURRENT_COMBO_NAME,
+    payload: { name }
+})
+
+export const newCharacter = () => ({
+    type: NEW_CHARACTER
+})
+
+export const changeCharacter = ({ id }) => ({
+    type: CHANGE_CHARACTER,
+    payload: { id }
+})
+
+export const renameCurrentCharacter = ({ name }) => ({
+    type: RENAME_CURRENT_CHARACTER,
     payload: { name }
 })

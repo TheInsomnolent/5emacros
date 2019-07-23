@@ -1,4 +1,6 @@
-import { omit } from "lodash"
+import { omit, pick } from "lodash"
+import uuid from "uuid/v4"
+
 import {
     ADD_ATTACK,
     DELETE_ATTACK,
@@ -13,9 +15,24 @@ import {
     CLEAR_CURRENT_COMBO,
     UPDATE_CURRENT_COMBO_NAME,
     DELETE_COMBO,
-    EDIT_COMBO
+    EDIT_COMBO,
+    NEW_CHARACTER,
+    CHANGE_CHARACTER,
+    RENAME_CURRENT_CHARACTER
 } from "./actions"
 import { rollAttacks } from "./Roll"
+
+const createNewBlankCharacter = () => {
+    return {
+        id: uuid(),
+        name: "Unnamed Character",
+        attacks: {},
+        combos: {},
+        currentComboName: "",
+        currentCombo: [],
+        rollData: []
+    }
+}
 
 let initialState = {
     attacks: {},
@@ -38,18 +55,62 @@ let initialState = {
         Thunder: null,
         Force: null
     },
-    currentDC: 10
+    currentDC: 10,
+    currentCharacterName: null,
+    currentCharacterId: null,
+    characters: null
 }
 
-const storedData = JSON.parse(window.localStorage.getItem("storedState"))
-if (storedData)
-    initialState = {
-        ...initialState,
-        ...storedData
+// Load stored data if any
+let storedData = JSON.parse(window.localStorage.getItem("storedState"))
+if (!storedData) storedData = {}
+initialState = {
+    ...initialState,
+    ...storedData
+}
+
+if (!initialState.currentCharacterId) {
+    // If no character is selected but one exists pick the top one
+    if (!!initialState.characters && Object.keys(initialState.characters) > 0) {
+        const character = Object.values(initialState.characters)[0]
+        initialState = {
+            ...initialState,
+            ...{
+                currentCharacterId: character.id,
+                currentCharacterName: character.name,
+                ...omit(character, ["id", "name"])
+            }
+        }
     }
+
+    // If no character is selected and none exist create one
+    if (
+        !initialState.characters ||
+        Object.keys(initialState.characters) === 0
+    ) {
+        const character = createNewBlankCharacter()
+        initialState = {
+            ...initialState,
+            ...{
+                currentCharacterId: character.id,
+                currentCharacterName: character.name,
+                ...omit(character, ["id", "name"]),
+                characters: {
+                    [character.id]: character
+                }
+            }
+        }
+    }
+}
 
 const reducer = (state = initialState, action) => {
     let next_state
+    let next_character
+    let duplicate_name_counter = 0
+    const existing_names = !state.characters
+        ? []
+        : Object.values(state.characters).map(({ name }) => name)
+
     switch (action.type) {
         case ADD_ATTACK:
             next_state = {
@@ -176,10 +237,85 @@ const reducer = (state = initialState, action) => {
             }
             break
 
+        case NEW_CHARACTER:
+            next_character = createNewBlankCharacter()
+            while (existing_names.includes(next_character.name)) {
+                duplicate_name_counter += 1
+                if (duplicate_name_counter === 1)
+                    next_character.name = `${next_character.name} ${duplicate_name_counter}`
+                else
+                    next_character.name = next_character.name.replace(
+                        `${duplicate_name_counter - 1}`,
+                        `${duplicate_name_counter}`
+                    )
+            }
+            next_state = {
+                ...state,
+                ...{
+                    currentCharacterId: next_character.id,
+                    currentCharacterName: next_character.name,
+                    ...omit(next_character, ["id", "name"])
+                },
+                characters: {
+                    ...state.characters,
+                    [next_character.id]: next_character
+                }
+            }
+            break
+
+        case CHANGE_CHARACTER:
+            next_character = state.characters[action.payload.id]
+            next_state = {
+                ...state,
+                ...{
+                    currentCharacterId: next_character.id,
+                    currentCharacterName: next_character.name,
+                    ...omit(next_character, ["id", "name"])
+                }
+            }
+            break
+
+        case RENAME_CURRENT_CHARACTER:
+            next_state = {
+                ...state,
+                currentCharacterName: action.payload.name,
+                characters: {
+                    ...state.characters,
+                    [state.currentCharacterId]: {
+                        ...state.characters[state.currentCharacterId],
+                        name: action.payload.name
+                    }
+                }
+            }
+            break
+
         default:
             next_state = state
             break
     }
+    // Update stored character
+    if (
+        next_state.currentCharacterId &&
+        next_state.characters[next_state.currentCharacterId]
+    ) {
+        next_state = {
+            ...next_state,
+            characters: {
+                ...next_state.characters,
+                [next_state.currentCharacterId]: {
+                    ...next_state.characters[next_state.currentCharacterId],
+                    ...pick(next_state, [
+                        "attacks",
+                        "combos",
+                        "currentComboName",
+                        "currentCombo",
+                        "rollData"
+                    ])
+                }
+            }
+        }
+    }
+
     window.localStorage.setItem("storedState", JSON.stringify(next_state))
     return next_state
 }
