@@ -1,5 +1,5 @@
 import React, { Fragment } from "react"
-import { Typography, CardContent, Box } from "@material-ui/core"
+import { Typography } from "@material-ui/core"
 import theme from "./theme"
 import { connect } from "react-redux"
 import { makeStyles } from "@material-ui/core/styles"
@@ -57,7 +57,6 @@ const CritFailDamageBlock = ({
     magicalDamageByType,
     nonMagicalDamageByType
 }) => {
-    const classes = useStyles()
     return (
         <div
             style={{
@@ -86,14 +85,7 @@ const CritFailDamageBlock = ({
                 >
                     {critFailDamage}
                 </Typography>
-                <Typography
-                    variant="subtitle1"
-                    // style={{
-                    //     marginTop: theme.space.s
-                    // }}
-                >
-                    {" damage"}
-                </Typography>
+                <Typography variant="subtitle1">{" damage"}</Typography>
             </span>
             <DamageBreakdown
                 magicalDamageByType={magicalDamageByType}
@@ -101,7 +93,7 @@ const CritFailDamageBlock = ({
                 critFail
             />
             <Typography
-                variant="body"
+                variant="body1"
                 style={{
                     marginTop: theme.space.s,
                     display: "block",
@@ -116,7 +108,6 @@ const CritFailDamageBlock = ({
 
 const Damage = ({ rollData, currentDC, damageModifiers }) => {
     let totalDamage = 0
-    let critSuccessDamage = 0
     let critFailDamage = 0
     let magicalDamageByType = {}
     let nonMagicalDamageByType = {}
@@ -154,7 +145,6 @@ const Damage = ({ rollData, currentDC, damageModifiers }) => {
                     break
             }
             totalDamage += attackDamage
-            if (attack.crit === "SUCCESS") critSuccessDamage += attackDamage
             if (attack.magical) {
                 if (!magicalDamageByType[attack.type])
                     magicalDamageByType[attack.type] = 0

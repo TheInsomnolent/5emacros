@@ -1,11 +1,10 @@
 import React, { Fragment } from "react"
 import AdmiralAppBar from "./AppBar"
 import Attacks from "./Attacks"
-import theme from "./theme"
 import Roll from "./Roll"
 import Combos from "./Combos"
-import Target from "./Target";
-import DeleteCharacter from "./DeleteCharacter";
+import Target from "./Target"
+import DeleteCharacter from "./DeleteCharacter"
 
 function App() {
     return (
