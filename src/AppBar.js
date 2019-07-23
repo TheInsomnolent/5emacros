@@ -18,9 +18,6 @@ import theme from "./theme"
 import { TextField } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        flexGrow: 1
-    },
     title: {
         flexGrow: 1
     },
@@ -51,81 +48,77 @@ const MenuAppBar = ({
     }
 
     return (
-        <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" className={classes.title}>
-                        5e Macro Roller
-                    </Typography>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center"
-                        }}
+        <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6" className={classes.title}>
+                    5e Macro Roller
+                </Typography>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center"
+                    }}
+                >
+                    <TextField
+                        id="standard-bare"
+                        className="characterNameInput"
+                        value={currentCharacterName}
+                        onChange={e =>
+                            editCharacterName({ name: e.target.value })
+                        }
+                    />
+                    <IconButton
+                        aria-label="Account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleMenu}
+                        color="inherit"
                     >
-                        <TextField
-                            id="standard-bare"
-                            className="characterNameInput"
-                            value={currentCharacterName}
-                            onChange={e =>
-                                editCharacterName({ name: e.target.value })
-                            }
-                        />
-                        <IconButton
-                            aria-label="Account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleMenu}
-                            color="inherit"
-                        >
-                            <RecentActors />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "right"
+                        <RecentActors />
+                    </IconButton>
+                    <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "right"
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right"
+                        }}
+                        open={open}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={handleClose}>
+                            {currentCharacterName}
+                        </MenuItem>
+                        {Object.values(characters)
+                            .filter(({ name }) => name !== currentCharacterName)
+                            .map(({ id, name }) => (
+                                <MenuItem
+                                    key={name}
+                                    onClick={() => {
+                                        handleClose()
+                                        switchCharacter({ id })
+                                    }}
+                                >
+                                    {name}
+                                </MenuItem>
+                            ))}
+                        <MenuItem
+                            onClick={() => {
+                                handleClose()
+                                makeNewCharacter()
                             }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right"
-                            }}
-                            open={open}
-                            onClose={handleClose}
                         >
-                            <MenuItem onClick={handleClose}>
-                                {currentCharacterName}
-                            </MenuItem>
-                            {Object.values(characters)
-                                .filter(
-                                    ({ name }) => name !== currentCharacterName
-                                )
-                                .map(({ id, name }) => (
-                                    <MenuItem
-                                        key={name}
-                                        onClick={() => {
-                                            handleClose()
-                                            switchCharacter({ id })
-                                        }}
-                                    >
-                                        {name}
-                                    </MenuItem>
-                                ))}
-                            <MenuItem
-                                onClick={() => {
-                                    handleClose()
-                                    makeNewCharacter()
-                                }}
-                            >
-                                <Add /> New Character
-                            </MenuItem>
-                        </Menu>
-                    </div>
-                </Toolbar>
-            </AppBar>
-        </div>
+                            <Add /> New Character
+                        </MenuItem>
+                    </Menu>
+                </div>
+            </Toolbar>
+        </AppBar>
     )
 }
 
