@@ -311,7 +311,7 @@ class CurrentCombo extends Component {
             <Box className={classes.card}>
                 <CardContent>
                     <Typography variant="h5" component="h2">
-                        Current Combo
+                        Create Combo
                     </Typography>
                     <form
                         style={{ display: "flex", flexDirection: "column" }}
