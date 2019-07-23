@@ -4,6 +4,7 @@ import Attacks from "./Attacks"
 import theme from "./theme"
 import Roll from "./Roll"
 import Combos from "./Combos"
+import Resistances from "./Resistances";
 
 function App() {
     return (
@@ -17,9 +18,10 @@ function App() {
                     flexWrap: "wrap",
                     width: "90%",
                     justifyContent: "center",
-                    margin: "0 auto",
+                    margin: "0 auto"
                 }}
             >
+                <Resistances />
                 <Attacks />
                 <Combos />
             </div>

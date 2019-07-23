@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Card, Box, Container } from "@material-ui/core"
+import { Card, Box } from "@material-ui/core"
 import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
 import Button from "@material-ui/core/Button"
@@ -23,6 +23,7 @@ import {
     rollAttack as rollAttack_,
     addAttackToCombo as addAttackToCombo_
 } from "./actions"
+import Drawer from "./Drawer"
 
 const useStyles = makeStyles({
     card: {
@@ -313,10 +314,7 @@ const Attacks = ({
     const classes = useStyles()
 
     return (
-        <Container>
-            <Typography variant="h4" component="h2">
-                Attacks
-            </Typography>
+        <Drawer id="attacks" heading="Attacks">
             <Box display="flex" flexDirection="row" flexWrap="wrap">
                 <RenderAttacks
                     attacks={attacks}
@@ -327,7 +325,7 @@ const Attacks = ({
                 />
                 <AddAttack classes={classes} addAttack={addAttack} />
             </Box>
-        </Container>
+        </Drawer>
     )
 }
 

@@ -15,6 +15,8 @@ export const UPDATE_CURRENT_COMBO_NAME = "UPDATE_CURRENT_COMBO_NAME"
 export const NEW_CHARACTER = "NEW_CHARACTER"
 export const CHANGE_CHARACTER = "CHANGE_CHARACTER"
 export const RENAME_CURRENT_CHARACTER = "RENAME_CURRENT_CHARACTER"
+export const SET_DAMAGE_MODIFIER = "SET_DAMAGE_MODIFIER"
+export const TOGGLE_DRAWER = "TOGGLE_DRAWER"
 
 export const addAttack = ({ attack }) => ({
     type: ADD_ATTACK,
@@ -95,4 +97,14 @@ export const changeCharacter = ({ id }) => ({
 export const renameCurrentCharacter = ({ name }) => ({
     type: RENAME_CURRENT_CHARACTER,
     payload: { name }
+})
+
+export const setDamageModifier = ({ type, value }) => ({
+    type: SET_DAMAGE_MODIFIER,
+    payload: { type, value }
+})
+
+export const toggleDrawer = ({ key }) => ({
+    type: TOGGLE_DRAWER,
+    payload: { key }
 })

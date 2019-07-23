@@ -125,6 +125,7 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     flex-direction: column;
     &>*:not(:last-child) { margin-bottom: ${theme.space.m}; }
+    background: #efefef;
   }
 
   h1,

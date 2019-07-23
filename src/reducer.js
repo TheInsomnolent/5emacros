@@ -18,7 +18,9 @@ import {
     EDIT_COMBO,
     NEW_CHARACTER,
     CHANGE_CHARACTER,
-    RENAME_CURRENT_CHARACTER
+    RENAME_CURRENT_CHARACTER,
+    SET_DAMAGE_MODIFIER,
+    TOGGLE_DRAWER
 } from "./actions"
 import { rollAttacks } from "./Roll"
 
@@ -37,6 +39,9 @@ const createNewBlankCharacter = () => {
 let initialState = {
     attacks: {},
     combos: {},
+    drawers: {
+        attacks: true
+    },
     currentComboName: "",
     currentCombo: [],
     rollData: [],
@@ -285,6 +290,28 @@ const reducer = (state = initialState, action) => {
                         ...state.characters[state.currentCharacterId],
                         name: action.payload.name
                     }
+                }
+            }
+            break
+
+        case SET_DAMAGE_MODIFIER:
+            next_state = {
+                ...state,
+                damageModifiers: {
+                    ...state.damageModifiers,
+                    [action.payload.type]: action.payload.value
+                }
+            }
+            break
+
+        case TOGGLE_DRAWER:
+            next_state = {
+                ...state,
+                drawers: {
+                    ...state.drawers,
+                    [action.payload.key]: state.drawers[action.payload.key]
+                        ? !state.drawers[action.payload.key]
+                        : true
                 }
             }
             break

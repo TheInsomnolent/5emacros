@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Card, Box, Container, Grid, IconButton } from "@material-ui/core"
+import { Card, Box, IconButton } from "@material-ui/core"
 import CardActions from "@material-ui/core/CardActions"
 import CardContent from "@material-ui/core/CardContent"
 import Button from "@material-ui/core/Button"
@@ -20,6 +20,7 @@ import {
     updateCurrentComboName as updateCurrentComboName_,
     removeAttackFromCombo as removeAttackFromCombo_
 } from "./actions"
+import Drawer from "./Drawer"
 
 const TypeAbbreviations = {
     Slashing: "Sla",
@@ -396,10 +397,7 @@ const Combos = ({
     const classes = useStyles()
 
     return (
-        <Container>
-            <Typography variant="h4" component="h2">
-                Combos
-            </Typography>
+        <Drawer id="combos" heading="Combos">
             <Box display="flex" flexDirection="row" flexWrap="wrap">
                 <RenderCombos
                     combos={combos}
@@ -419,7 +417,7 @@ const Combos = ({
                     removeAttackFromCombo={removeAttackFromCombo}
                 />
             </Box>
-        </Container>
+        </Drawer>
     )
 }
 
