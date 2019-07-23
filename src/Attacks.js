@@ -155,11 +155,12 @@ class AddAttack extends Component {
         if (this.state.type === "") errors.type = "Must select damage type"
         if (!/(^[+-]\d\d*$)/.test(this.state.hit))
             errors.hit = "Invalid hit text"
-        if (
-            !/^(\d\d*)|(?!\d+$)(([1-9]\d*)?[Dd]?[1-9]\d*( ?[+-] ?)?)+(?<![+-] ?)$/.test(
-                this.state.damage
-            )
+
+        const splitDamage = this.state.damage.replace(" ", "").split(/[+-]/)
+        const valid = splitDamage.map(
+            substr => /^(\d\d*)$/.test(substr) || /^(\d\d*d\d\d*)$/.test(substr)
         )
+        if (valid.length !== valid.filter(v => !!v).length)
             errors.damage = "Invalid damage text"
 
         if (Object.keys(errors).length === 0) {

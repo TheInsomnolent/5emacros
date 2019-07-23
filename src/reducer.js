@@ -20,7 +20,10 @@ import {
     CHANGE_CHARACTER,
     RENAME_CURRENT_CHARACTER,
     SET_DAMAGE_MODIFIER,
-    TOGGLE_DRAWER
+    TOGGLE_DRAWER,
+    CANCEL_DELETE,
+    DELETE_CHARACTER,
+    CONFIRM_DELETE
 } from "./actions"
 import { rollAttacks } from "./Roll"
 
@@ -65,7 +68,8 @@ let initialState = {
     currentDC: 10,
     currentCharacterName: null,
     currentCharacterId: null,
-    characters: null
+    characters: null,
+    pendingDelete: null
 }
 
 // Load stored data if any
@@ -315,6 +319,58 @@ const reducer = (state = initialState, action) => {
                         ? !state.drawers[action.payload.key]
                         : true
                 }
+            }
+            break
+
+        case DELETE_CHARACTER:
+            next_state = {
+                ...state,
+                pendingDelete: action.payload.id
+            }
+            break
+
+        case CANCEL_DELETE:
+            next_state = {
+                ...state,
+                pendingDelete: null
+            }
+            break
+
+        case CONFIRM_DELETE:
+            next_state = { ...state }
+            // If current character is target
+            if (state.pendingDelete === state.currentCharacterId) {
+                // If other character exists pick the top one
+                if (Object.keys(initialState.characters) > 0) {
+                    next_character = Object.values(initialState.characters)[0]
+                    next_state = {
+                        ...next_state,
+                        ...{
+                            currentCharacterId: next_character.id,
+                            currentCharacterName: next_character.name,
+                            ...omit(next_character, ["id", "name"])
+                        }
+                    }
+                }
+                // If no other character exist create one
+                else {
+                    next_character = createNewBlankCharacter()
+                    next_state = {
+                        ...next_state,
+                        ...{
+                            currentCharacterId: next_character.id,
+                            currentCharacterName: next_character.name,
+                            ...omit(next_character, ["id", "name"])
+                        }
+                    }
+                }
+            }
+
+            // Remove character from store
+            next_state = {
+                ...next_state,
+                characters: omit(next_state.characters, [state.pendingDelete]),
+                pendingDelete: null
             }
             break
 

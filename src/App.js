@@ -5,6 +5,7 @@ import theme from "./theme"
 import Roll from "./Roll"
 import Combos from "./Combos"
 import Target from "./Target";
+import DeleteCharacter from "./DeleteCharacter";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
             </div>
 
             <Roll />
+            <DeleteCharacter />
         </Fragment>
     )
 }

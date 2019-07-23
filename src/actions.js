@@ -17,6 +17,9 @@ export const CHANGE_CHARACTER = "CHANGE_CHARACTER"
 export const RENAME_CURRENT_CHARACTER = "RENAME_CURRENT_CHARACTER"
 export const SET_DAMAGE_MODIFIER = "SET_DAMAGE_MODIFIER"
 export const TOGGLE_DRAWER = "TOGGLE_DRAWER"
+export const DELETE_CHARACTER = "DELETE_CHARACTER"
+export const CONFIRM_DELETE = "CONFIRM_DELETE"
+export const CANCEL_DELETE = "CANCEL_DELETE"
 
 export const addAttack = ({ attack }) => ({
     type: ADD_ATTACK,
@@ -107,4 +110,17 @@ export const setDamageModifier = ({ type, value }) => ({
 export const toggleDrawer = ({ key }) => ({
     type: TOGGLE_DRAWER,
     payload: { key }
+})
+
+export const deleteCharacter = ({ id }) => ({
+    type: DELETE_CHARACTER,
+    payload: { id }
+})
+
+export const confirmDelete = () => ({
+    type: CONFIRM_DELETE
+})
+
+export const cancelDelete = () => ({
+    type: CANCEL_DELETE
 })

@@ -5,6 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import IconButton from "@material-ui/core/IconButton"
 import RecentActors from "@material-ui/icons/RecentActors"
+import Delete from "@material-ui/icons/Delete"
 import Add from "@material-ui/icons/Add"
 import MenuItem from "@material-ui/core/MenuItem"
 import Menu from "@material-ui/core/Menu"
@@ -12,9 +13,9 @@ import { connect } from "react-redux"
 import {
     newCharacter,
     changeCharacter,
-    renameCurrentCharacter
+    renameCurrentCharacter,
+    deleteCharacter as deleteCharacter_
 } from "./actions"
-import theme from "./theme"
 import { TextField } from "@material-ui/core"
 
 const useStyles = makeStyles(theme => ({
@@ -30,10 +31,12 @@ const useStyles = makeStyles(theme => ({
 
 const MenuAppBar = ({
     characters,
+    currentCharacterId,
     currentCharacterName,
     makeNewCharacter,
     switchCharacter,
-    editCharacterName
+    editCharacterName,
+    deleteCharacter
 }) => {
     const classes = useStyles()
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -93,6 +96,19 @@ const MenuAppBar = ({
                     >
                         <MenuItem onClick={handleClose}>
                             {currentCharacterName}
+                            <IconButton
+                                aria-label="Account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={event => {
+                                    event.stopPropagation()
+                                    deleteCharacter({ id: currentCharacterId })
+                                    handleClose()
+                                }}
+                                color="inherit"
+                            >
+                                <Delete />
+                            </IconButton>
                         </MenuItem>
                         {Object.values(characters)
                             .filter(({ name }) => name !== currentCharacterName)
@@ -105,6 +121,20 @@ const MenuAppBar = ({
                                     }}
                                 >
                                     {name}
+
+                                    <IconButton
+                                        aria-label="Account of current user"
+                                        aria-controls="menu-appbar"
+                                        aria-haspopup="true"
+                                        onClick={event => {
+                                            event.stopPropagation()
+                                            deleteCharacter({ id })
+                                            handleClose()
+                                        }}
+                                        color="inherit"
+                                    >
+                                        <Delete />
+                                    </IconButton>
                                 </MenuItem>
                             ))}
                         <MenuItem
@@ -137,6 +167,9 @@ const mapDispatchToProps = dispatch => ({
     },
     editCharacterName({ name }) {
         dispatch(renameCurrentCharacter({ name }))
+    },
+    deleteCharacter({ id }) {
+        dispatch(deleteCharacter_({ id }))
     }
 })
 
